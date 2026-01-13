@@ -1,3 +1,7 @@
+-- Ensure user has access from any host (Docker networking)
+GRANT ALL PRIVILEGES ON famchart.* TO 'famchart'@'%' IDENTIFIED BY 'famchartpass';
+FLUSH PRIVILEGES;
+
 CREATE TABLE IF NOT EXISTS tasks (
     id VARCHAR(255) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,

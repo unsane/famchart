@@ -255,7 +255,7 @@ app.post('/api/vincent/big-goal', async (req, res) => {
 });
 
 const startServer = async () => {
-    let retries = 5;
+    let retries = 30; // Increased to 30 (approx 2.5 mins) for slow NAS initialization
     while (retries > 0) {
         if (await checkConnection()) {
             app.listen(PORT, () => {
