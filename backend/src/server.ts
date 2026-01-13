@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { query } from './db';
+import { query, checkConnection } from './db';
 
 const app = express();
 app.use(cors());
@@ -254,6 +254,21 @@ app.post('/api/vincent/big-goal', async (req, res) => {
     } catch(e) { res.status(500).json({error: e}) }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+    let retries = 5;
+    while (retries > 0) {
+        if (await checkConnection()) {
+            app.listen(PORT, () => {
+                console.log(`Server running on port ${PORT}`);
+            });
+            return;
+        }
+        console.log(`Database not ready. Retrying in 5s... (${retries} attempts left)`);
+        await new Promise(res => setTimeout(res, 5000));
+        retries--;
+    }
+    console.error('Could not connect to database after multiple attempts. Exiting.');
+    process.exit(1);
+};
+
+startServer();
