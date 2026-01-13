@@ -5,6 +5,7 @@ services:
     image: mariadb:10.6
     container_name: famchart_db
     restart: always
+    command: --skip-name-resolve
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: famchart
