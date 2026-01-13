@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.6
+    container_name: famchart_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: famchart
+      MYSQL_USER: famchart
+      MYSQL_PASSWORD: famchartpass
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  backend:
+    build: ./backend
+    container_name: famchart_backend
+    restart: always
+    environment:
+      DB_HOST: mariadb
+      DB_USER: famchart
+      DB_PASSWORD: famchartpass
+      DB_NAME: famchart
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mariadb
+
+  frontend:
+    build: .
+    container_name: famchart_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mariadb_data:
